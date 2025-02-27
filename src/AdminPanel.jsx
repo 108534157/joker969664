@@ -10,7 +10,7 @@ export default function AdminPanel() {
   useEffect(() => {
     const fetchCodes = async () => {
       try {
-        const response = await axios.get("http://localhost:4000/get-codes");
+        const response = await axios.get("/api/get-codes"); // ✅ 修改這裡
         if (response.data.success) {
           setCodes(response.data.codes);
         } else {
@@ -34,7 +34,7 @@ export default function AdminPanel() {
     const newCode = { id: uuidv4(), value: points };
 
     try {
-      const response = await axios.post("http://localhost:4000/insert-code", newCode);
+      const response = await axios.post("/api/insert-code", newCode); // ✅ 修改這裡
       if (response.data.success) {
         setCodes((prevCodes) => [...prevCodes, newCode]); // 更新畫面
         setPoints(0);
