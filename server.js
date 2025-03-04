@@ -16,10 +16,10 @@ app.use(bodyParser.json());
 
 // ✅ 連接 MySQL 資料庫
 const db = mysql.createPool({
-  host: "localhost",
-  user: "root", // ⚠️ 修改成你的 MySQL 使用者
-  password: "yourpassword", // ⚠️ 修改成你的 MySQL 密碼
-  database: "baccarat_db",
+  host: "sql12.freesqldatabase.com",
+  user: "sql12765835", // ⚠️ 修改成你的 MySQL 使用者
+  password: "ZYj7Hic3yq", // ⚠️ 修改成你的 MySQL 密碼
+  database: "sql12765835",
 });
 
 // ✅ **確保 `codes` 和 `admins` 資料表存在**
