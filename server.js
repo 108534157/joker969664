@@ -13,7 +13,7 @@ const SECRET_KEY = process.env.SECRET_KEY || "super_secret_key"; // 使用環境
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
-
+require("dotenv").config(); // ✅ 載入 .env
 // 連接 MySQL 資料庫
 const db = mysql.createPool({
   host: "sql12.freesqldatabase.com",
