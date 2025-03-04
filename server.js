@@ -20,6 +20,10 @@ const db = mysql.createPool({
   user: "sql12765835", // ⚠️ 修改成你的 MySQL 使用者
   password: "ZYj7Hic3yq", // ⚠️ 修改成你的 MySQL 密碼
   database: "sql12765835",
+  port: 3306,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
 
 // ✅ **確保 `codes` 和 `admins` 資料表存在**
