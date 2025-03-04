@@ -1,10 +1,14 @@
 {
-    "build": {
-      "env": {
-        "LIBSQL_DATABASE_URL": "@libsql_database_url",
-        "LIBSQL_AUTH_TOKEN": "@libsql_auth_token"
-      }
-    },
-    "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
-  }
-  
+  "build": {
+    "env": {
+      "MYSQL_HOST": "@mysql_host",
+      "MYSQL_USER": "@mysql_user",
+      "MYSQL_PASSWORD": "@mysql_password",
+      "MYSQL_DATABASE": "@mysql_database",
+      "MYSQL_PORT": "@mysql_port"
+    }
+  },
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/server.js" }
+  ]
+}
