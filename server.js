@@ -2,28 +2,28 @@ const express = require("express");
 const mysql = require("mysql2");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken"); // 新增 JWT 支援
-require("dotenv").config(); // 使用環境變數
+const bcrypt = require("bcryptjs"); // 修正 bcrypt 套件名稱
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 const app = express();
 const PORT = 4000;
-const SECRET_KEY = process.env.SECRET_KEY || "super_secret_key"; // 使用環境變數
+const SECRET_KEY = process.env.SECRET_KEY || "super_secret_key";
 
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
-require("dotenv").config(); // ✅ 載入 .env
+
 // 連接 MySQL 資料庫
 const db = mysql.createPool({
-  host: "sql12.freesqldatabase.com",
-  user: "sql12765835", // 修改成你的 MySQL 使用者
-  password: "ZYj7Hic3yq", // 修改成你的 MySQL 密碼
-  database: "sql12765835",
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
   port: 3306,
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0
+  queueLimit: 0,
 });
 
 // 確保 `codes` 和 `admins` 資料表存在
@@ -93,7 +93,6 @@ app.post("/insert-code", verifyAdmin, (req, res) => {
 // 管理員登入 API
 app.post("/admin-login", (req, res) => {
   const { username, password } = req.body;
-
   db.query("SELECT * FROM admins WHERE username = ?", [username], async (err, results) => {
     if (err) return res.status(500).json({ success: false, message: "伺服器錯誤" });
     if (results.length === 0) return res.status(401).json({ success: false, message: "帳號不存在" });
@@ -103,7 +102,6 @@ app.post("/admin-login", (req, res) => {
       if (!validPassword) return res.status(401).json({ success: false, message: "密碼錯誤" });
 
       const token = jwt.sign({ id: results[0].id, username }, SECRET_KEY, { expiresIn: "2h" });
-
       res.json({ success: true, token });
     } catch (error) {
       res.status(500).json({ success: false, message: "伺服器錯誤" });
@@ -114,15 +112,10 @@ app.post("/admin-login", (req, res) => {
 // 驗證管理員 Token Middleware
 function verifyAdmin(req, res, next) {
   const token = req.headers.authorization?.split(" ")[1];
-
-  if (!token) {
-    return res.status(403).json({ success: false, message: "權限不足！" });
-  }
+  if (!token) return res.status(403).json({ success: false, message: "權限不足！" });
 
   jwt.verify(token, SECRET_KEY, (err, decoded) => {
-    if (err) {
-      return res.status(401).json({ success: false, message: "無效的 Token" });
-    }
+    if (err) return res.status(401).json({ success: false, message: "無效的 Token" });
     req.admin = decoded;
     next();
   });
@@ -143,4 +136,5 @@ app.post("/admin-register", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`伺服器運行於 http://localhost:${PORT}`);
 });
+
 module.exports = app;
